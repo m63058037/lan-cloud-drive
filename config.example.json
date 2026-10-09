@@ -1,0 +1,11 @@
+{
+  "host": "0.0.0.0",
+  "port": 8091,
+  "password": "change-me",
+  "storage_dir": "D:\\云盘数据",
+  "secret_key": "lan-cloud-disk-change-me-if-needed",
+  "session_max_age_hours": 72,
+  "max_upload_mb": 0,
+  "auto_zip_mb": 300,
+  "local_port": 53317
+}

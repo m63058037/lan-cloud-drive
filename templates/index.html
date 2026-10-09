@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>局域网云盘</title>
+  <link rel="stylesheet" href="/static/app.css" id="theme-css" />
+  <script>
+    try {
+      var _dark = localStorage.getItem("dark") === "1";
+      var _t = localStorage.getItem("theme");
+      document.getElementById("theme-css").href = "/static/" + (_t === "v1" ? "app.css" : "app-v2.css");
+      if (_dark) document.documentElement.classList.add("dark");
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></symbol>
+    <symbol id="i-video" viewBox="0 0 24 24"><path d="m22 8-6 4 6 4V8Z"/><rect width="14" height="12" x="2" y="6" rx="2" ry="2"/></symbol>
+    <symbol id="i-audio" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+    <symbol id="i-pdf" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M9 12h6"/><path d="M9 16h6"/></symbol>
+    <symbol id="i-text" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></symbol>
+    <symbol id="i-zip" viewBox="0 0 24 24"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></symbol>
+    <symbol id="i-folder-plus" viewBox="0 0 24 24"><path d="M12 10v6"/><path d="M9 13h6"/><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+    <symbol id="i-file-plus" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="M9 15h6"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-arrow-up-down" viewBox="0 0 24 24"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+    <symbol id="i-package" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></symbol>
+    <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 22a10 10 0 1 1 10-10c0 1.5-1 3-2.5 3H17a2 2 0 0 0-2 2c0 .5.2 1 .5 1.4.3.4.5.8.5 1.4 0 1.1-.9 2-2 2Z"/><circle cx="7.5" cy="11.5" r="1"/><circle cx="11" cy="7.5" r="1"/><circle cx="15.5" cy="11.5" r="1"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
+  </svg>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-title">
+        <span class="logo"><svg class="ic"><use href="#i-cloud"/></svg></span>
+        <strong>局域网云盘</strong>
+      </div>
+      <span class="muted storage" id="usage" title="{{ storage_label }}">{{ storage_label }}</span>
+    </div>
+    <div class="top-actions">
+      <div class="search-wrap">
+        <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
+        <input id="search" type="search" placeholder="搜索文件名，回车" autocomplete="off" />
+      </div>
+      <button type="button" id="btn-mkdir" class="btn"><svg class="ic" aria-hidden="true"><use href="#i-folder-plus"/></svg>新建文件夹</button>
+      <button type="button" id="btn-touch" class="btn"><svg class="ic" aria-hidden="true"><use href="#i-file-plus"/></svg>新建文本</button>
+      <label class="btn btn-primary file-btn" title="可一次选择多个文件"><svg class="ic" aria-hidden="true"><use href="#i-upload"/></svg>上传<input type="file" id="file-input" multiple hidden /></label>
+      <label class="btn file-btn" title="上传整个文件夹，保留目录结构"><svg class="ic" aria-hidden="true"><use href="#i-folder"/></svg>上传文件夹<input type="file" id="folder-input" webkitdirectory multiple hidden /></label>
+      <button type="button" id="btn-theme" class="btn" title="切换界面风格"><svg class="ic" aria-hidden="true"><use href="#i-palette"/></svg><span>风格</span></button>
+      <button type="button" id="btn-dark" class="btn" title="切换深色/浅色模式"><svg class="ic" aria-hidden="true"><use href="#i-moon"/></svg><span>深色</span></button>
+      <form method="post" action="/logout" class="inline">
+        <button type="submit" class="btn btn-ghost"><svg class="ic" aria-hidden="true"><use href="#i-logout"/></svg>退出</button>
+      </form>
+    </div>
+  </header>
+
+  <nav class="crumbs" id="crumbs" aria-label="路径"></nav>
+
+  <div class="toolbar">
+    <div class="toolbar-row">
+      <p id="status" class="status muted"></p>
+      <div class="toolbar-right">
+        <select id="sort" title="排序">
+          <option value="name">按名称</option>
+          <option value="mtime">按时间</option>
+          <option value="size">按大小</option>
+        </select>
+        <button type="button" id="btn-view" class="btn" title="视图"><svg class="ic" aria-hidden="true"><use href="#i-arrow-up-down"/></svg>网格</button>
+        <button type="button" id="btn-favs" class="btn"><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg>收藏</button>
+        <button type="button" id="btn-recent" class="btn"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>最近</button>
+        <button type="button" id="btn-trash" class="btn"><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg>回收站</button>
+        <button type="button" id="btn-paste" class="btn" hidden><svg class="ic" aria-hidden="true"><use href="#i-clipboard"/></svg>粘贴</button>
+        <button type="button" id="btn-zip" class="btn" hidden><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg>打包下载</button>
+        <button type="button" id="btn-bulk-del" class="btn btn-danger" hidden><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg>删除所选</button>
+      </div>
+    </div>
+    <div id="dropzone" class="dropzone" hidden>松开即可上传到当前目录</div>
+  </div>
+
+  <main class="panel" id="panel">
+    <table class="file-table" id="file-table" aria-label="文件列表">
+      <thead>
+        <tr>
+          <th class="col-check"><input type="checkbox" id="check-all" title="全选" /></th>
+          <th>名称</th>
+          <th class="col-size">大小</th>
+          <th class="col-time">修改时间</th>
+          <th class="col-actions">操作</th>
+        </tr>
+      </thead>
+      <tbody id="file-body">
+        <tr><td colspan="5" class="muted">加载中…</td></tr>
+      </tbody>
+    </table>
+    <div class="grid" id="grid" hidden></div>
+  </main>
+
+  <dialog id="prompt-dialog">
+    <form method="dialog" id="prompt-form">
+      <h2 id="prompt-title">输入名称</h2>
+      <input id="prompt-input" type="text" required maxlength="200" autocomplete="off" />
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-ghost" id="prompt-cancel">取消</button>
+        <button type="submit" value="ok" class="btn btn-primary">确定</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="preview-dialog" class="wide">
+    <div class="preview-bar">
+      <strong id="preview-name">预览</strong>
+      <button type="button" class="btn" id="preview-close">关闭</button>
+    </div>
+    <div id="preview-body" class="preview-body"></div>
+  </dialog>
+
+  <dialog id="edit-dialog" class="wide">
+    <form id="edit-form">
+      <div class="preview-bar">
+        <strong id="edit-name">编辑</strong>
+        <div>
+          <button type="button" class="btn btn-ghost" id="edit-cancel">取消</button>
+          <button type="submit" class="btn btn-primary">保存</button>
+        </div>
+      </div>
+      <textarea id="edit-text" spellcheck="false"></textarea>
+    </form>
+  </dialog>
+
+  <dialog id="share-dialog">
+    <form method="dialog" id="share-form">
+      <h2>分享链接</h2>
+      <p class="muted" id="share-hint"></p>
+      <input id="share-url" readonly />
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-ghost" id="share-close">关闭</button>
+        <button type="submit" class="btn btn-primary" id="share-copy">复制链接</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="local-dialog">
+    <div id="local-body">
+      <h2>发送到附近设备</h2>
+      <p class="muted" id="local-hint"></p>
+      <div class="device-list" id="local-devices"></div>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-ghost" id="local-close">关闭</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

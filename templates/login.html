@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>局域网云盘 · 登录</title>
+  <link rel="stylesheet" href="/static/app.css" id="theme-css" />
+  <script>
+    try {
+      var _dark = localStorage.getItem("dark") === "1";
+      var _t = localStorage.getItem("theme");
+      document.getElementById("theme-css").href = "/static/" + (_t === "v1" ? "app.css" : "app-v2.css");
+      if (_dark) document.documentElement.classList.add("dark");
+    } catch (e) {}
+  </script>
+</head>
+<body class="auth-body">
+  <main class="auth-card">
+    <div class="auth-logo">
+      <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+    </div>
+    <h1>局域网云盘</h1>
+    <p class="muted">输入共享密码后进入</p>
+    {% if error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+    <form method="post" action="/login" class="auth-form" id="login-form">
+      <label for="password">共享密码</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required autofocus />
+      <button type="submit">进入</button>
+    </form>
+  </main>
+  <script>
+    document.getElementById("password").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        document.getElementById("login-form").requestSubmit();
+      }
+    });
+  </script>
+</body>
+</html>

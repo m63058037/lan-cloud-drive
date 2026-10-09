@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>分享 · {{ name }}</title>
+  <link rel="stylesheet" href="/static/app.css" id="theme-css" />
+  <script>
+    try {
+      var _dark = localStorage.getItem("dark") === "1";
+      var _t = localStorage.getItem("theme");
+      document.getElementById("theme-css").href = "/static/" + (_t === "v1" ? "app.css" : "app-v2.css");
+      if (_dark) document.documentElement.classList.add("dark");
+    } catch (e) {}
+  </script>
+</head>
+<body class="auth-body">
+  <main class="auth-card">
+    <div class="auth-logo">
+      <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+    </div>
+    <h1>文件分享</h1>
+    <p class="muted">{{ name }}{% if is_dir %}（文件夹，将打包为 zip）{% endif %}</p>
+    <p><a class="btn btn-primary" href="/s/{{ token }}/download">下载</a></p>
+  </main>
+</body>
+</html>
